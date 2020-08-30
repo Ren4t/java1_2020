@@ -7,8 +7,8 @@ import java.util.Scanner;
 public class TicTacToe {
 
     private static char[][] map;
-    private static final int SIZE = 3;
-    private static final int DOTS_TO_WIN = 3;
+    private static final int SIZE = 5;
+    // private static final int DOTS_TO_WIN = 3;
 
     private static final char DOT_EMPTY = '*';
     private static final char DOT_X = 'X';
@@ -19,39 +19,374 @@ public class TicTacToe {
 
 
     public static void main(String[] args) {
-        initMap();
-        printMap();
+        System.out.println("Начало игры!");
+        prepareGame();
+        playGame();
+        System.out.println("Игра закончена!");
+    }
 
-        humanTurn();
+    private static void playGame() {
+        do {
+            try {
+                humanTurn();
+            } catch (Exception e) {
+                humanTurn();
+            }
+            printMap();
+            if (checkWin(DOT_X)) {
+                System.out.println("Победил человек!");
+                break;
+            }
+            aiTurn();
+            printMap();
+            if (checkWin(DOT_O)) {
+                System.out.println("Победил ИИ");
+                break;
+            }
 
-        aiTurn();
+            if (isMapFull()) {
+                System.out.println("Ничья!");
+                break;
+            }
 
+        } while (true);
 
     }
 
-    private static boolean checkWin(char sumbol) {
+    private static void prepareGame() {
+        initMap();
+        printMap();
+    }
 
+    private static boolean isMapFull() {
+        for (char[] row : map) {
+            for (char cell : row) {
+                if (cell == DOT_EMPTY) {
+                    return false;
+                }
+            }
+
+        }
+        return true;
+    }
+
+    private static boolean checkWin(char symbol) {
+
+        for (int i = 0; i < map.length; i++) {
+            for (int j = 0; j < map.length; j++) {
+//                if (map[i][j] == symbol) {
+//                    if ((i + 1 < SIZE && map[i + 1][j] == symbol) ||
+//                            (i + 1 < SIZE && j + 1 < SIZE && map[i + 1][j + 1] == symbol) ||
+//                            // (i + 2 < SIZE && j + 2 < SIZE && map[i + 2][j + 2] == symbol) ||
+//                            (j + 1 < SIZE && map[i][j + 1] == symbol)) {
+//                        if ((i + 2 < SIZE && map[i + 2][j] == symbol) ||
+//                                (i + 2 < SIZE && j + 2 < SIZE && map[i + 2][j + 2] == symbol) ||
+//                                (j + 2 < SIZE && map[i][j + 2] == symbol)) {
+//                            //return true;
+//                            if (((i + 3 < SIZE && map[i + 3][j] == symbol) ||
+//                                    (i + 3 < SIZE && j + 3 < SIZE && map[i + 3][j + 3] == symbol) ||
+//                                    (j + 3 < SIZE && map[i][j + 3] == symbol)))
+//                                return true;
+//                        }
+//                    }
+//                }
+                if (j + 3 < SIZE && map[i][j] == symbol && map[i][j + 1] == symbol && map[i][j + 2] == symbol && map[i][j + 3] == symbol) {
+                    return true;
+                }
+                if (i + 3 < SIZE && map[i][j] == symbol && map[i + 1][j] == symbol && map[i + 2][j] == symbol && map[i + 3][j] == symbol) {
+                    return true;
+                }
+                if (i + 3 < SIZE && j + 3 < SIZE && map[i][j] == symbol && map[i + 1][j + 1] == symbol && map[i + 2][j + 2] == symbol && map[i + 3][j + 3] == symbol) {
+                    return true;
+                }
+                if (i + 3 < SIZE && j - 3 >= 0 && map[i][j] == symbol && map[i + 1][j - 1] == symbol && map[i + 2][j - 2] == symbol && map[i + 3][j - 3] == symbol) {
+                    return true;
+                }
+            }
+
+        }
         return false;
     }
 
     private static void aiTurn() {
-        int rowIndex, colIndex;
-        do {
-            rowIndex = random.nextInt(SIZE);
-            colIndex = random.nextInt(SIZE);
+//        int rowIndex, colIndex;
+//        do {
+//            rowIndex = random.nextInt(SIZE);
+//            colIndex = random.nextInt(SIZE);
+//
+//        } while (isCellValid(rowIndex, colIndex));
+//
+//        map[rowIndex][colIndex] = DOT_O;
+        boolean flag = false;
 
-        } while (!isCellValid());
+        do {
+            for (int i = 0; i < map.length; i++) {
+                for (int j = 0; j < map.length; j++) {
+
+                    if (j + 3 < SIZE && map[i][j] == DOT_O && map[i][j + 1] == DOT_O && map[i][j + 2] == DOT_O) {
+
+                        if (map[i][j + 3] == DOT_EMPTY) {
+                            map[i][j + 3] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (j - 1 > 0 && map[i][j - 1] == DOT_EMPTY) {
+                                map[i][j - 1] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (i + 3 < SIZE && map[i][j] == DOT_O && map[i + 1][j] == DOT_O && map[i + 2][j] == DOT_O) {
+                        if (map[i + 3][j] == DOT_EMPTY) {
+                            map[i + 3][j] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (i - 1 > 0 && map[i - 1][j] == DOT_EMPTY) {
+                                map[i - 1][j] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (i + 3 < SIZE && j + 3 < SIZE && map[i][j] == DOT_O && map[i + 1][j + 1] == DOT_O && map[i + 2][j + 2] == DOT_O) {
+                        if (map[i + 3][j + 3] == DOT_EMPTY) {
+                            map[i + 3][j + 3] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (i - 1 > 0 && j - 1 > 0 && map[i - 1][j - 1] == DOT_EMPTY) {
+                                map[i - 1][j - 1] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (i + 3 < SIZE && j - 3 >= 0 && map[i][j] == DOT_O && map[i + 1][j - 1] == DOT_O && map[i + 2][j - 2] == DOT_O) {
+                        if (map[i + 3][j - 3] == DOT_EMPTY) {
+                            map[i + 3][j - 3] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (i - 1 > 0 && j + 1 < SIZE && map[i - 1][j + 1] == DOT_EMPTY) {
+                                map[i - 1][j + 1] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+
+                }
+                if (flag) {
+                    break;
+                }
+            }
+            if (flag) {
+                break;
+            }
+
+            for (int i = 0; i < map.length; i++) {
+                for (int j = 0; j < map.length; j++) {
+
+                    //-----------------------------------------------------------
+                    if (j + 3 < SIZE && map[i][j] == DOT_X && map[i][j + 1] == DOT_X && map[i][j + 2] == DOT_X) {
+
+                        if (map[i][j + 3] == DOT_EMPTY) {
+                            map[i][j + 3] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (j - 1 > 0 && map[i][j - 1] == DOT_EMPTY) {
+                                map[i][j - 1] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (i + 3 < SIZE && map[i][j] == DOT_X && map[i + 1][j] == DOT_X && map[i + 2][j] == DOT_X) {
+                        if (map[i + 3][j] == DOT_EMPTY) {
+                            map[i + 3][j] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (i - 1 > 0 && map[i - 1][j] == DOT_EMPTY) {
+                                map[i - 1][j] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (i + 3 < SIZE && j + 3 < SIZE && map[i][j] == DOT_X && map[i + 1][j + 1] == DOT_X && map[i + 2][j + 2] == DOT_X) {
+                        if (map[i + 3][j + 3] == DOT_EMPTY) {
+                            map[i + 3][j + 3] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (i - 1 > 0 && j - 1 > 0 && map[i - 1][j - 1] == DOT_EMPTY) {
+                                map[i - 1][j - 1] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (i + 3 < SIZE && j - 3 >= 0 && map[i][j] == DOT_X && map[i + 1][j - 1] == DOT_X && map[i + 2][j - 2] == DOT_X) {
+                        if (map[i + 3][j - 3] == DOT_EMPTY) {
+                            map[i + 3][j - 3] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (i - 1 > 0 && j + 1 < SIZE && map[i - 1][j + 1] == DOT_EMPTY) {
+                                map[i - 1][j + 1] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                }
+                if (flag) {
+                    break;
+                }
+            }
+            if (flag) {
+                break;
+            }
+
+            for (int i = 0; i < map.length; i++) {
+                for (int j = 0; j < map.length; j++) {
+
+                    //-------------------------------------------------------------------------------------
+                    if (j + 2 < SIZE && map[i][j] == DOT_X && map[i][j + 1] == DOT_X) {
+
+                        if (map[i][j + 2] == DOT_EMPTY) {
+                            map[i][j + 2] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (j - 1 > 0 && map[i][j - 1] == DOT_EMPTY) {
+                                map[i][j - 1] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (i + 2 < SIZE && map[i][j] == DOT_X && map[i + 1][j] == DOT_X) {
+                        if (map[i + 2][j] == DOT_EMPTY) {
+                            map[i + 2][j] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (i - 1 > 0 && map[i - 1][j] == DOT_EMPTY) {
+                                map[i - 1][j] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (i + 2 < SIZE && j + 2 < SIZE && map[i][j] == DOT_X && map[i + 1][j + 1] == DOT_X) {
+                        if (map[i + 2][j + 2] == DOT_EMPTY) {
+                            map[i + 2][j + 2] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (i - 1 > 0 && j - 1 > 0 && map[i - 1][j - 1] == DOT_EMPTY) {
+                                map[i - 1][j - 1] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (i + 2 < SIZE && j - 2 >= 0 && map[i][j] == DOT_X && map[i + 1][j - 1] == DOT_X) {
+                        if (map[i + 2][j - 2] == DOT_EMPTY) {
+                            map[i + 2][j - 2] = DOT_O;
+                            flag = true;
+                            break;
+                        } else {
+                            if (i - 1 > 0 && j + 1 < SIZE && map[i - 1][j + 1] == DOT_EMPTY) {
+                                map[i - 1][j + 1] = DOT_O;
+                                flag = true;
+                                break;
+                            }
+                        }
+                    }
+                    if (flag) {
+                        break;
+                    }
+                }
+            }
+            if (flag) {
+                break;
+            }
+
+
+            for (int i = 0; i < map.length; i++) {
+                for (int j = 0; j < map.length; j++) {
+
+
+                    //-----------------------------------------------------------------------------------
+                    if (map[i][j] == DOT_X) {
+                        for (int k = 0; k < 3; k++) {
+                            for (int l = 0; l < 3; l++) {
+                                int x = i - 1 + k;
+                                int y = j - 1 + l;
+                                if (x >= 0 && y >= 0 && x < SIZE && y < SIZE && map[x][y] == DOT_EMPTY) {
+                                    map[x][y] = DOT_O;
+                                    flag = true;
+                                    break;
+                                }
+                            }
+                            if (flag) {
+                                break;
+                            }
+                        }
+                        if (flag) {
+                            break;
+                        }
+                    }
+                    if (flag) {
+                        break;
+                    }
+                }
+                if (flag) {
+                    break;
+                }
+            }
+            if (flag) {
+                break;
+            }
+        } while (true);
     }
 
     private static void humanTurn() {
-        int rowNumbers, colNumbers;
+        int rowIndex = -1, colIndex = -1;
         do {
-            String stringData = scanner.nextLine();
-        } while (!isCellValid());
+            System.out.println("Введите координаты в формате <номер строки> <номер колонки>");
+            String[] stringData = scanner.nextLine().split(" ");
+            if (stringData.length != 2) {
+                continue;
+            }
+            try {
+                rowIndex = Integer.parseInt(stringData[0]) - 1;
+                colIndex = Integer.parseInt(stringData[1]) - 1;
+            } catch (NumberFormatException e) {
+                //e.printStackTrace();
+                System.out.println("Введены некорректные данные");
+                continue;
+            }
+
+        } while (isCellValid(rowIndex, colIndex));
+
+        map[rowIndex][colIndex] = DOT_X;
     }
 
-    private static boolean isCellValid() {
-        return false;
+    private static boolean isCellValid(int rowIndex, int colIndex) {
+        if (rowIndex < 0 || rowIndex >= SIZE || colIndex < 0 || colIndex >= SIZE) {
+            return false;
+        }
+        if (map[rowIndex][colIndex] == DOT_O && map[rowIndex][colIndex] == DOT_X) {
+            return false;
+        }
+        return map[rowIndex][colIndex] != DOT_EMPTY;
     }
 
     private static void printMap() {
@@ -80,89 +415,15 @@ public class TicTacToe {
 
     private static void initMap() {
         map = new char[SIZE][SIZE];
-        for (int i = 0; i < map.length; i++) {
-            Arrays.fill(map[i], DOT_EMPTY);
+        for (char[] row : map) {
+            Arrays.fill(row, DOT_EMPTY);
         }
     }
+
+    void f() {
+
+
+    }
 }
-//import java.util.Random;
-//        import java.util.Scanner;
-//public class MainClass {
-//    public static int SIZE = 3;
-//    public static int DOTS_TO_WIN = 3;
-//    public static final char DOT_EMPTY = '•';
-//    public static final char DOT_X = 'X';
-//    public static final char DOT_O = 'O';
-//    public static char[][] map;
-//    public static Scanner sc = new Scanner(System.in);
-//    public static Random rand = new Random();
-//    public static void main(String[] args) {
-//        initMap();
-//        printMap();
-//        while (true) {
-//            humanTurn();
-//            printMap();
-//            if (checkWin(DOT_X)) {
-//                System.out.println("Победил человек");
-//                break;
-//            }
-//            if (isMapFull()) {
-//                System.out.println("Ничья");
-//                break;
-//            }
-//            aiTurn();
-//            printMap();
-//            if (checkWin(DOT_O)) {
-//                System.out.println("Победил Искуственный Интеллект");
-//                break;
-//            }
-//            if (isMapFull()) {
-//                System.out.println("Ничья");
-//                break;
-//            }
-//        }
-//        System.out.println("Игра закончена");
-//    }
-//    public static boolean checkWin(char symb) {
-//        if(map[0][0] == symb && map[0][1] == symb && map[0][2] == symb) return true;
-//        if(map[1][0] == symb && map[1][1] == symb && map[1][2] == symb) return true;
-//        if (map[2][0] == symb && map[2][1] == symb && map[2][2] == symb) return true;
-//        if (map[0][0] == symb && map[1][0] == symb && map[2][0] == symb) return true;
-//        if (map[0][1] == symb && map[1][1] == symb && map[2][1] == symb) return true;
-//        if (map[0][2] == symb && map[1][2] == symb && map[2][2] == symb) return true;
-//        if (map[0][0] == symb && map[1][1] == symb && map[2][2] == symb) return true;
-//        if (map[2][0] == symb && map[1][1] == symb && map[0][2] == symb) return true;
-//        return false;
-//    }
-//    public static boolean isMapFull() {
-//        for (int i = 0; i < SIZE; i++) {
-//            for (int j = 0; j < SIZE; j++) {
-//                if (map[i][j] == DOT_EMPTY) return false;
-//            }
-//        }
-//        return true;
-//    }
-//    public static void aiTurn() {
-//        int x, y;
-//        do {
-//            x = rand.nextInt(SIZE);
-//            y = rand.nextInt(SIZE);
-//        } while (!isCellValid(x, y));
-//        System.out.println("Компьютер походил в точку " + (x + 1) + " " + (y + 1));
-//        map[y][x] = DOT_O;
-//    }
-//    public static void humanTurn() {
-//        int x, y;
-//        do {
-//            System.out.println("Введите координаты в формате X Y");
-//            x = sc.nextInt() - 1;
-//            y = sc.nextInt() - 1;
-//        } while (!isCellValid(x, y)); // while(isCellValid(x, y) == false)
-//        map[y][x] = DOT_X;
-//    }
-//    public static boolean isCellValid(int x, int y) {
-//        if (x < 0 || x >= SIZE || y < 0 || y >= SIZE) return false;
-//        if (map[y][x] == DOT_EMPTY) return true;
-//        return false;
-//    }
-//
+
+
