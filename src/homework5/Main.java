@@ -20,9 +20,9 @@ public class Main {
     }
 
     private static void outputMaxAge(Person[] personArray,int max_age) {
-        for (int i = 0; i < 5; i++) {
-            if(personArray[i].getAge()>max_age){
-                personArray[i].informationOutput();
+        for (Person person : personArray) {
+            if(person.getAge()>max_age){
+                person.informationOutput();
                 System.out.println();
             }
         }
