@@ -2,14 +2,16 @@ package homework2_4;
 
 import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.TextArea;
+import javafx.scene.control.TextField;
 
-import javax.swing.text.html.ListView;
-import java.awt.*;
 
 public class ChatController {
 
     @FXML
-    public ListView usersList;
+    public ListView listView;
 
     @FXML
     public Button sendButton;
@@ -22,8 +24,15 @@ public class ChatController {
 
     @FXML
     public void initialize() {
-        usersList.setItems(FXCollections.observableArrayList(MainClass.USER_DATA));
-        sendButton.set
+        listView.setItems(FXCollections.observableArrayList(MainClass.USERS_DATA));
+        sendButton.setOnAction(event -> sendMessage());
+        textField.setOnAction(event -> sendMessage());
+    }
+
+    private void sendMessage() {
+        chatHistory.appendText(textField.getText());
+        chatHistory.appendText(System.lineSeparator());
+        textField.clear();
     }
 
 

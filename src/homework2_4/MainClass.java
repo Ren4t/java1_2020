@@ -12,7 +12,7 @@ import java.util.List;
 
 public class MainClass extends Application {
 
-    public static final List<String> USER_DATA = Arrays.asList("Vasya","Petiya","Fediya");
+    public static final List<String> USERS_DATA = Arrays.asList("Vasya","Petiya","Fediya");
 
     public static void main(String[] args) {
         launch(args);
